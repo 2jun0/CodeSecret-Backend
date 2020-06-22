@@ -28,13 +28,14 @@ def get_all_files(repo: Repository, filter: object=None, branch='master'):
 
 		for tag in file_tags:
 			name = tag.select('.content a')[0].text
+			file_sha = tag.select('.content a')[0].attrs['id'].split('-')[-1]
 			commit_sha = tag.select('.message a')[0].attrs['href'][-40:]
 			is_file = not tag.attrs['href'].startswith('/{}/tree'.format(repo.fullname))
 
 			fullname = tag.attrs['href'].split('/{}/'.format(branch))[-1]
 			file = File(
 				fullname=fullname, name=name, 
-				last_commit_sha=commit_sha, repo_fullname=repo.fullname
+				last_commit_sha=commit_sha, repo_fullname=repo.fullname, sha=file_sha
 			)
 
 			if filter:

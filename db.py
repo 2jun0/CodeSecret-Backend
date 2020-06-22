@@ -123,8 +123,8 @@ def add_file(f: File):
    try:
       curs = conn.cursor(pymysql.cursors.DictCursor)
       #sql문 실행
-      sql = 'insert into file(fullname,name,lastCommitSha,repoFullname) values(%s,%s,%s,%s)'
-      curs.execute(sql, (f.fullname,f.name,f.last_commit_sha,f.repo_fullname))
+      sql = 'insert into file(fullname,name,lastCommitSha,repoFullname,sha) values(%s,%s,%s,%s,%s)'
+      curs.execute(sql, (f.fullname,f.name,f.last_commit_sha,f.repo_fullname,f.sha))
       conn.commit()
    except pymysql.err.IntegrityError as e:
       raise CustomError(error='File_DUPLICATE', status=500, exception=e)
@@ -137,7 +137,7 @@ def get_file(fullname):
 	curs.execute(sql, (fullname))
 	return curs.fetchone()
 
-def update_file(fullname, name=None, last_commit_sha=None, repo_fullname=None):
+def update_file(fullname, name=None, last_commit_sha=None, repo_fullname=None, sha=None):
 	global conn
 	try:
 		curs = conn.cursor(pymysql.cursors.DictCursor)
@@ -155,6 +155,9 @@ def update_file(fullname, name=None, last_commit_sha=None, repo_fullname=None):
 		if repo_fullname:
 			args.append(repo_fullname)
 			sql += 'repoFullname = %s '
+		if sha:
+			args.append(sha)
+			sql += 'sha = %s '
 		
 		args.append(fullname)
 		sql += ' where fullname = %s'
@@ -177,13 +180,15 @@ def add_secret_key(s: SecretKey):
    except pymysql.err.IntegrityError as e:
       raise CustomError(error='SECRET_KEY_DUPLICATE', status=500, exception=e)
 
-def get_secret_key(account_id):
+def get_secret_keys(account_id):
 	global conn
 
 	curs = conn.cursor(pymysql.cursors.DictCursor)
 	sql = "select * from account,secret_key, file, repository where account.id = repository.owner = file.repoFullname = file.fullname = secret_key.fileFullname"
 	curs.execute(sql)
 	return curs.fetchall()
+
+def get_secret_key(s: SecretKey):
 
 def connection_close():
 	global conn
@@ -226,4 +231,4 @@ def user_dict_to_obj(user_dict):
 def repo_dict_to_obj(repo_dict):
 	return Repository(fullname = repo_dict['fullname'], name = repo_dict['name'], last_commit_date = repo_dict['lastCommitDate'], last_commit_sha = repo_dict['lastCommitSha'], owner= repo_dict['owner'])
 def file_dict_to_obj(file_dict):
-	return File(fullname = file_dict['fullname'], name = file_dict['name'], last_commit_sha = file_dict['lastCommitSha'], repo_fullname= file_dict['repoFullname'])
+	return File(fullname = file_dict['fullname'], name = file_dict['name'], last_commit_sha = file_dict['lastCommitSha'], repo_fullname= file_dict['repoFullname'], sha= file_dict['sha'])

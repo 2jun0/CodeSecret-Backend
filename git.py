@@ -29,6 +29,10 @@ def github_account_validate(github_username, github_password):
 # 	except Exception as e:
 # 		return False
 
+def get_repository(repository):
+	global g
+	return g.get_repo(repository)
+
 def get_all_repositories(github_username):
 	global g
 	return g.get_user(github_username).get_repos()

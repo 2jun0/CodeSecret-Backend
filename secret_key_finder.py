@@ -23,16 +23,24 @@ def act(sleep_time):
 				user = db.user_dict_to_obj(user_dict)
 
 				for repo in gc.get_all_repositories(user, repo_filter):
-					for file in gc.get_all_files(repo, file_filter):
-						# api key 찾기
-						content = gc.get_file_content(file)
-						api_keys = []
-						
-						api_keys = patern_finder(file, content)
-						api_keys = entropy_filter(api_keys)
+					secret_keys_by_file = {}
 
-						for api_key in api_keys:
-							db.add_secret_key(SecretKey(api_key))
+					for file in gc.get_all_files(repo, file_filter):
+						# secret key 찾기
+						content = gc.get_file_content(file)
+						
+						secret_keys = patern_finder(file, content)
+						secret_keys = entropy_filter(secret_keys)
+
+						# Key find
+						if len(secret_keys) > 0:
+							secret_keys_by_file[file.fullname] = []
+							
+							for secret_key in secret_keys:
+								secret_keys_by_file[file.fullname].append(secret_key)
+								db.add_secret_key(secret_key)
+
+
 
 		time.sleep(sleep_time)
 

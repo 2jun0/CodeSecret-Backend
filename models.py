@@ -13,11 +13,12 @@ class Repository:
 		self.owner = owner
 
 class File:
-	def __init__(self, fullname, name, last_commit_sha, repo_fullname):
+	def __init__(self, fullname, name, last_commit_sha, repo_fullname, sha):
 		self.fullname = fullname
 		self.name = name
 		self.last_commit_sha = last_commit_sha
 		self.repo_fullname = repo_fullname
+		self.sha = sha
 
 class SecretKey:
 	def __init__(self, y, x, fileFullname, content):
