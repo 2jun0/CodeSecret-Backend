@@ -1,3 +1,5 @@
+import time
+from selenium import webdriver
 import requests
 import git as g
 from bs4 import BeautifulSoup
@@ -22,17 +24,30 @@ def get_all_files(repo: Repository, filter: object=None, branch='master'):
 
 	while dirs:
 		url = dirs.pop(0)
-		src = requests.get(url).text
-		soup = BeautifulSoup(src, 'lxml')
-		file_tags = soup.select('.files .js-navigation-item')
+		driver = webdriver.Chrome('chromedriver_win32/chromedriver.exe')
+		driver.get(url)
+
+		html = driver.page_source
+		while 'Skeleton' in html:
+			time.sleep(0.1)
+			html = driver.page_source
+
+		soup = BeautifulSoup(html, 'lxml')
+		file_tags = soup.select('.repository-content .js-navigation-item')
 
 		for tag in file_tags:
-			name = tag.select('.content a')[0].text
-			file_sha = tag.select('.content a')[0].attrs['id'].split('-')[-1]
-			commit_sha = tag.select('.message a')[0].attrs['href'][-40:]
-			is_file = not tag.attrs['href'].startswith('/{}/tree'.format(repo.fullname))
+			file_tag = tag.select('span a')
+			if len(file_tag) == 0:
+				continue
 
-			fullname = tag.attrs['href'].split('/{}/'.format(branch))[-1]
+			file_tag = file_tag[0]
+
+			name = file_tag.text
+			file_sha = file_tag.attrs['id'].split('-')[-1]
+			commit_sha = tag.select('.commit-message a')[0].attrs['href'][-40:]
+			is_file = not file_tag.attrs['href'].startswith('/{}/tree'.format(repo.fullname))
+
+			fullname = file_tag.attrs['href'].split('/{}/'.format(branch))[-1]
 			file = File(
 				fullname=fullname, name=name, 
 				last_commit_sha=commit_sha, repo_fullname=repo.fullname, sha=file_sha
@@ -42,9 +57,11 @@ def get_all_files(repo: Repository, filter: object=None, branch='master'):
 				if not filter(file, is_file): continue
 
 			if not is_file: # is directory
-				dirs.append('https://github.com'+tag.attrs['href'])
+				dirs.append('https://github.com'+file_tag.attrs['href'])
 			else:
 				files.append(file)
+
+		driver.quit()
 				
 	return files
 

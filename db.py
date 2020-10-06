@@ -84,26 +84,26 @@ def update_repository(fullname, name=None, last_commit_date=None, last_commit_sh
 
 		# sql문 조합
 		sql = 'update repository set '
-
 		args = []
 		if name: 
 			args.append(name)
-			sql += 'name = %s '
+			sql += 'name = %s,'
 		if last_commit_date:
 			args.append(last_commit_date)
-			sql += 'lastCommitDate = %s '
+			sql += 'lastCommitDate = %s,'
 		if last_commit_sha:
 			args.append(last_commit_sha)
-			sql += 'lastCommitSha = %s '
+			sql += 'lastCommitSha = %s,'
 		if owner:
 			args.append(owner)
-			sql += 'owner = %s '
+			sql += 'owner = %s,'
 		
 		args.append(fullname)
+		sql = sql[:-1] # 마지막 문자 자르기(, 때문)
 		sql += ' where fullname = %s'
 
 		#sql문 실행
-		curs.execute(sql, (args))
+		curs.execute(sql, args)
 		conn.commit()
 	except pymysql.err.IntegrityError as e:
 		raise CustomError(error='REPOSITORY_UPDATE_ERROR', status=500, exception=e)
@@ -148,22 +148,23 @@ def update_file(fullname, name=None, last_commit_sha=None, repo_fullname=None, s
 		args = []
 		if name: 
 			args.append(name)
-			sql += 'name = %s '
+			sql += 'name = %s,'
 		if last_commit_sha:
 			args.append(last_commit_sha)
-			sql += 'lastCommitSha = %s '
+			sql += 'lastCommitSha = %s,'
 		if repo_fullname:
 			args.append(repo_fullname)
-			sql += 'repoFullname = %s '
+			sql += 'repoFullname = %s,'
 		if sha:
 			args.append(sha)
-			sql += 'sha = %s '
+			sql += 'sha = %s,'
 		
+		sql = sql[:-1] # 마지막 문자 자르기(, 때문)
 		args.append(fullname)
 		sql += ' where fullname = %s'
 
 		#sql문 실행
-		curs.execute(sql, (args))
+		curs.execute(sql, args)
 		conn.commit()
 	except pymysql.err.IntegrityError as e:
 		raise CustomError(error='FILE_UPDATE_ERROR', status=500, exception=e)
@@ -174,8 +175,8 @@ def add_secret_key(s: SecretKey):
    try:
       curs = conn.cursor(pymysql.cursors.DictCursor)
       #sql문 실행
-      sql = 'insert into secret_key(y,x,fileFullname,content) values(%d,%d,%s,%s)'
-      curs.execute(sql, (s.y,s.x,s.fileFullname,s.content))
+      sql = 'insert into secret_key(y,x,fileFullname,fileCommitSha,content) values(%s,%s,%s,%s,%s)'
+      curs.execute(sql, (s.y,s.x,s.file_fullname,s.file_commit_sha,s.content))
       conn.commit()
    except pymysql.err.IntegrityError as e:
       raise CustomError(error='SECRET_KEY_DUPLICATE', status=500, exception=e)
@@ -187,8 +188,6 @@ def get_secret_keys(account_id):
 	sql = "select * from account,secret_key, file, repository where account.id = repository.owner = file.repoFullname = file.fullname = secret_key.fileFullname"
 	curs.execute(sql)
 	return curs.fetchall()
-
-def get_secret_key(s: SecretKey):
 
 def connection_close():
 	global conn
@@ -232,3 +231,5 @@ def repo_dict_to_obj(repo_dict):
 	return Repository(fullname = repo_dict['fullname'], name = repo_dict['name'], last_commit_date = repo_dict['lastCommitDate'], last_commit_sha = repo_dict['lastCommitSha'], owner= repo_dict['owner'])
 def file_dict_to_obj(file_dict):
 	return File(fullname = file_dict['fullname'], name = file_dict['name'], last_commit_sha = file_dict['lastCommitSha'], repo_fullname= file_dict['repoFullname'], sha= file_dict['sha'])
+def secret_key_dict_to_obj(secret_key_dict):
+	return SecretKey(x=secret_key_dict['x'], y=secret_key_dict['y'], file_fullname=secret_key_dict['fileFullname'], file_commit_sha=secret_key_dict['fileCommitSha'], content=secret_key_dict['content'])

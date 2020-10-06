@@ -16,5 +16,6 @@ API_REGEX = {
 
 FILE_FILTER = {
 	'IGNORE_NAME' : ['^__.*__','^\..*'],
-	'ALLOW_FILE_EXTENSIONS' : ['py', 'js', 'json', 'java', 'c',	'cpp', 'h', 'hpp', 'm', 'mm',	'pl', 'jsp', 'ts', 'php', 'as',	'asp', 'cs', 'go', 'md',	'sh', 'lua', 'rb', 'xml', 'r', 'sql',	'swift', 'vb', 'pl'],
+	'SELECT_NAME' : ['.gitignore'],
+	'ALLOW_FILE_EXTENSIONS' : ['py', 'js', 'java', 'c',	'cpp'],
 }

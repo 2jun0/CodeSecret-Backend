@@ -73,10 +73,6 @@ def add_account_route():
 		user = User(id, encrypted_password, github_username)
 		db.add_user(user)
 
-		# # 레파지토리 추가(스레드 실행)
-		# thr = threading.Thread(target = db.add_all_repositories, kwargs={'user':user})
-		# thr.start()
-
 		return jsonify(success=True), 200
 	except CustomError as e:
 		print(e)

@@ -7,7 +7,7 @@ def entropy_filter(keys: list):
 	secret_keys = []
 
 	for key in keys:
-		entropy = PasswordStats(key.content)
+		entropy = PasswordStats(key.content).strength()
 		if entropy > threshold_value:
 			secret_keys.append(key)
 	

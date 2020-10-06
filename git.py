@@ -62,7 +62,7 @@ def get_lastest_commit_sha(repo):
 # pygithub obj -> model obj
 # *******************************************
 def repository_to_obj(repo, owner):
-	return Repository(fullname = repo.full_name, name = repo.name, last_commit_date = get_lastest_commit_date(repo), last_commit_sha = get_lastest_commit_sha(repo), owner=owner)
+	return Repository(fullname = repo.full_name, name = repo.name, last_commit_date = get_lastest_commit_date(repo), last_commit_sha = get_lastest_commit_sha(repo), owner=owner, github_obj=repo)
 
 # *******************************************
 # 테스트 전용 함수

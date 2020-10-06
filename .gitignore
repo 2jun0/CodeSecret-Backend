@@ -123,3 +123,7 @@ dmypy.json
 .history/*
 
 config.py
+test*
+
+chromedriver_win32
+chromedriver_win32/*
