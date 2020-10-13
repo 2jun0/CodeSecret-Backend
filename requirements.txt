@@ -12,7 +12,7 @@ asposestorage == 1.0.2
 automium-web == 0.1.1
 backlogprocessing == 0.1.4
 binman == 0.1.1
-cernent == 0.1.0
+#cernent == 0.1.0
 
 certifi == 2020.6.20
 
@@ -95,7 +95,8 @@ jinja2 == 2.11.2
 kimai-cli == 0.2.0
 kpygithub == 1.32a1
 kubeasy == 0.7
-kupfer-plugin-git == 0.1.2laiye-python-third-proto == 0.1.1
+kupfer-plugin-git == 0.1.2
+laiye-python-third-proto == 0.1.1
 lambda-git == 0.1.1
 latex2markdown-bbsmp == 0.0.4.4
 markupsafe == 1.1.1
@@ -134,7 +135,8 @@ py-gerrit == 1.0.2
 py4grid == 1.0.5
 pyblueprint == 0.0.2
 pyclassifiers == 0.0.5
-pycryptodome == 3.9.8pygithub == 1.53
+pycryptodome == 3.9.8
+pygithub == 1.53
 pyhystrix == 1.0.0
 pymysql == 0.10.1
 pynotion == 0.0.1
