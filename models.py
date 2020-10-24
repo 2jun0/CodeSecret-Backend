@@ -57,10 +57,12 @@ class Repository:
 		return new_file
 
 class SecretKey:
-	def __init__(self, y, x, file_fullname, file_commit_sha, content, github_obj=None):
+	def __init__(self, y, x, file_fullname, file_commit_sha, content, repo_last_commit_sha=None, pull_num=0, github_obj=None):
 		self.y = y
 		self.x = x
 		self.file_fullname = file_fullname
 		self.file_commit_sha = file_commit_sha
 		self.content = content
 		self.github_obj = github_obj
+		self.repo_last_commit_sha = repo_last_commit_sha
+		self.pull_num = pull_num

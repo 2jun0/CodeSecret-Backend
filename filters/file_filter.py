@@ -20,16 +20,20 @@ def file_filter(cur_file: File, is_file): # true가 우리가 찾는 파일 or �
 	
 	prev_file = db.get_file(cur_file.fullname)
 
-	if not prev_file:
+	if not prev_file: # db에 파일이 기록되지 않음
 		db.add_file(cur_file)
 		return True
 	
 	prev_file = db.file_dict_to_obj(prev_file)
-	if cur_file.last_commit_sha != prev_file.last_commit_sha:
-		#??#db.update_file(fullname=prev_file.fullname, last_commit_sha=cur_file.last_commit_sha)
+	if cur_file.sha != prev_file.sha: # db에 파일이 기록됨 -> 업데이트 되었는가?
+		db.update_file(fullname=prev_file.fullname, sha=cur_file.sha)
 		return True
 
 	return False
 
 import sys
 sys.modules[__name__] = file_filter
+
+# if cur_file.last_commit_sha != prev_file.last_commit_sha: # db에 파일이 기록됨 -> 업데이트 되었는가?
+# 		db.update_file(fullname=prev_file.fullname, last_commit_sha=cur_file.last_commit_sha)
+# 		return True

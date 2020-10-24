@@ -37,6 +37,12 @@ def get_all_repositories(github_username):
 	global g
 	return g.get_user(github_username).get_repos()
 
+def get_tree(repo, sha=None):
+	if not sha:
+		sha = get_lastest_commit_sha(repo)
+
+	return repo.get_git_tree(sha).tree
+
 # 아래 세개의 함수는 git_crawling에서도 정상적으로 동작하는 함수가 있으니, 왠만하면 git_crawling의 함수를 쓰십시오.
 def get_all_files(repo):
 	files = []

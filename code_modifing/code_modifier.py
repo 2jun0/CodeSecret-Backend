@@ -79,10 +79,12 @@ class CodeModifier:
 
 	def pull_request(self):
 		if self.fork_repo:
-			result = self.upstream_repo.github_obj.create_pull("[Code Secret] Secret key leak problem fix", "Secret key leak problem fix", "master", "{}:code-fix".format(config.GITHUB_ACCOUNT['username']), True)
-			print('pull request : ', result)
+			pull = self.upstream_repo.github_obj.create_pull("[Code Secret] Secret key leak problem fix", "Secret key leak problem fix", "master", "{}:code-fix".format(config.GITHUB_ACCOUNT['username']), True)
+			print('pull request : ', pull)
 			self.fork_repo.github_obj.delete()
 			self.fork_repo = None
+
+			return pull
 
 	# upstream을 포크해서 code-fix 브랜치를 만든다.
 	def fork_upstream_repo(self):
@@ -90,5 +92,16 @@ class CodeModifier:
 		self.fork_repo = g.repository_to_obj(repo = self.upstream_repo.github_obj.create_fork(), owner = config.GITHUB_ACCOUNT['username'])
 		
 		# create code-fix branch
-		gobj_master_ref = self.fork_repo.github_obj.get_git_ref('heads/master')
-		self.fork_repo.github_obj.create_git_ref('refs/heads/code-fix', gobj_master_ref.object.sha)
+		refs = self.fork_repo.github_obj.get_git_refs()
+
+		code_fix_ref = None
+		gobj_master_ref = None
+
+		for ref in refs:
+			if ref.ref == 'refs/heads/master':
+				gobj_master_ref = ref
+			elif ref.ref == 'code_fix_ref':
+				code_fix_ref = ref
+				
+		if not code_fix_ref:
+			self.fork_repo.github_obj.create_git_ref('refs/heads/code-fix', gobj_master_ref.object.sha)

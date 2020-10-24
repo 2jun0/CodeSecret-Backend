@@ -80,12 +80,47 @@ def add_account_route():
 	
 # end - 계정 관련 코드
 # ---------------------------------------------
-@app.route('/get-secret-keys', methods=['GET'])
+@app.route('/get-leaked-repos', methods=['GET'])
+@jwt_required
+def get_leaked_repos():
+	account_id = get_jwt_identity()
+	repo_dicts = db.get_repositories_by_username(account_id)
+
+	response = {}
+	for repo_dict in repo_dicts:
+		repo = db.repo_dict_to_obj(repo_dict)
+		temp = db.get_recent_pull_num(repo)
+
+		if temp['keyCount'] > 0:
+			response[repo.fullname] = {
+				'fullname': repo.fullname,
+				'owner': repo.owner,
+				'pull_request_url' : 'https://github.com/%s/pull/%s' % (repo.fullname, temp['pullNum']),
+				'secret_key_count' : temp['keyCount'],
+				'name' : repo.name
+			}
+
+	return jsonify(response), 200
+
+@app.route('/get-secret-keys', methods=['POST'])
 @jwt_required
 def get_secret_keys():
 	account_id = get_jwt_identity()
-	secret_keys = db.get_secret_keys(account_id=account_id)
-	return jsonify(secret_keys), 200
+	repo_fullname = request.json['repo_fullname']
+
+	repo = db.repo_dict_to_obj(db.get_repository(fullname = repo_fullname))
+
+	if repo.owner != account_id:
+		raise CustomError(error='UNAUTHORIZED', msg='접근할 수 없습니다.', status=401)
+
+	secret_key_dicts = []
+
+	for secret_key_dict in db.get_recent_secret_keys(repo=repo):
+		secret_key_dicts.append(secret_key_dict)
+
+	return jsonify(secret_key_dicts), 200
+
+
 
 # 프로그램 종료시 실행
 @atexit.register

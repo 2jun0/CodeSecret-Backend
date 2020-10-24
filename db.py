@@ -77,6 +77,13 @@ def get_repository(fullname):
 	curs.execute(sql, (fullname))
 	return curs.fetchone()
 
+def get_repositories_by_username(username):
+	global conn
+	curs = conn.cursor(pymysql.cursors.DictCursor)
+	sql = "select * from repository where owner =%s"
+	curs.execute(sql, (username))
+	return curs.fetchall()
+
 def update_repository(fullname, name=None, last_commit_date=None, last_commit_sha=None, owner=None):
 	global conn
 	try:
@@ -175,19 +182,61 @@ def add_secret_key(s: SecretKey):
    try:
       curs = conn.cursor(pymysql.cursors.DictCursor)
       #sql문 실행
-      sql = 'insert into secret_key(y,x,fileFullname,fileCommitSha,content) values(%s,%s,%s,%s,%s)'
-      curs.execute(sql, (s.y,s.x,s.file_fullname,s.file_commit_sha,s.content))
+      sql = 'insert into secret_key(y,x,fileFullname,fileCommitSha,content,pullNum,repoLastCommitSha) values(%s,%s,%s,%s,%s,%s,%s)'
+      curs.execute(sql, (s.y,s.x,s.file_fullname,s.file_commit_sha,s.content,s.pull_num,s.repo_last_commit_sha))
       conn.commit()
    except pymysql.err.IntegrityError as e:
       raise CustomError(error='SECRET_KEY_DUPLICATE', status=500, exception=e)
 
-def get_secret_keys(account_id):
+def update_secret_key(id, pull_num):
+	global conn
+	try:
+		curs = conn.cursor(pymysql.cursors.DictCursor)
+
+		# sql문 조합
+		sql = 'update file set '
+
+		args = []
+		if name: 
+			args.append(name)
+			sql += 'name = %s,'
+		if last_commit_sha:
+			args.append(last_commit_sha)
+			sql += 'lastCommitSha = %s,'
+		if repo_fullname:
+			args.append(repo_fullname)
+			sql += 'repoFullname = %s,'
+		if sha:
+			args.append(sha)
+			sql += 'sha = %s,'
+		
+		sql = sql[:-1] # 마지막 문자 자르기(, 때문)
+		args.append(fullname)
+		sql += ' where fullname = %s'
+
+		#sql문 실행
+		curs.execute(sql, args)
+		conn.commit()
+	except pymysql.err.IntegrityError as e:
+		raise CustomError(error='SECRET_KEY_UPDATE_ERROR', status=500, exception=e)
+
+def get_recent_secret_keys(repo: Repository):
 	global conn
 
 	curs = conn.cursor(pymysql.cursors.DictCursor)
-	sql = "select * from account,secret_key, file, repository where account.id = repository.owner = file.repoFullname = file.fullname = secret_key.fileFullname"
-	curs.execute(sql)
+	sql = "select s.* from file as f, repository as r, secret_key as s\
+					where r.fullname = %s and f.repoFullname = r.fullname and s.fileFullname = f.fullname and s.repoLastCommitSha = %s"
+	curs.execute(sql, (repo.fullname, repo.last_commit_sha))
 	return curs.fetchall()
+
+def get_recent_pull_num(repo: Repository):
+	global conn
+
+	curs = conn.cursor(pymysql.cursors.DictCursor)
+	sql = "select count(*) as keyCount, s.pullNum from file as f, repository as r, secret_key as s\
+					where r.fullname = %s and f.repoFullname = r.fullname and s.fileFullname = f.fullname and s.repoLastCommitSha = %s"
+	curs.execute(sql, (repo.fullname, repo.last_commit_sha))
+	return curs.fetchone()
 
 def connection_close():
 	global conn
@@ -232,4 +281,4 @@ def repo_dict_to_obj(repo_dict):
 def file_dict_to_obj(file_dict):
 	return File(fullname = file_dict['fullname'], name = file_dict['name'], last_commit_sha = file_dict['lastCommitSha'], repo_fullname= file_dict['repoFullname'], sha= file_dict['sha'])
 def secret_key_dict_to_obj(secret_key_dict):
-	return SecretKey(x=secret_key_dict['x'], y=secret_key_dict['y'], file_fullname=secret_key_dict['fileFullname'], file_commit_sha=secret_key_dict['fileCommitSha'], content=secret_key_dict['content'])
+	return SecretKey(x=secret_key_dict['x'], y=secret_key_dict['y'], file_fullname=secret_key_dict['fileFullname'], file_commit_sha=secret_key_dict['fileCommitSha'], content=secret_key_dict['content'], repo_last_commit_sha=secret_key_dict['repoLastCommitSha'], pull_num=secret_key_dict['pullNum'])

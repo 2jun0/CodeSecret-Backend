@@ -5,6 +5,12 @@ import git as g
 from bs4 import BeautifulSoup
 from models import User, Repository, File
 
+def get_file_content(file: File, branch='master'):
+	return requests.get(url = 'https://raw.githubusercontent.com/{}/{}/{}'.format(file.repo_fullname, branch, file.fullname)).text
+
+#-------------------------------------------------------------
+# 아래는
+# 크롤링 하는 함수라 굉장히 불안정 합니다. 가급적이면 사용하지 마세요
 def get_all_repositories(user: User, filter: object=None):
 	repos = g.get_all_repositories(user.github_username)
 	obj_repos = []
@@ -43,7 +49,7 @@ def get_all_files(repo: Repository, filter: object=None, branch='master'):
 			file_tag = file_tag[0]
 
 			name = file_tag.text
-			file_sha = file_tag.attrs['id'].split('-')[-1]
+			file_sha = None#file_tag.attrs['id'].split('-')[-1]
 			commit_sha = tag.select('.commit-message a')[0].attrs['href'][-40:]
 			is_file = not file_tag.attrs['href'].startswith('/{}/tree'.format(repo.fullname))
 
@@ -64,6 +70,3 @@ def get_all_files(repo: Repository, filter: object=None, branch='master'):
 		driver.quit()
 				
 	return files
-
-def get_file_content(file: File, branch='master'):
-	return requests.get(url = 'https://raw.githubusercontent.com/{}/{}/{}'.format(file.repo_fullname, branch, file.fullname)).text
