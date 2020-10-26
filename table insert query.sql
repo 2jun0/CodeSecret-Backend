@@ -22,14 +22,18 @@ CREATE TABLE file (
   name varchar(100) NOT NULL,
   repoFullname varchar(512) NOT NULL,
   lastCommitSha varchar(50) DEFAULT NULL,
+  sha varchar(50),
   PRIMARY KEY (fullname),
   FOREIGN KEY (repoFullname) REFERENCES repository (fullname) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE secret_key (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   y int NOT NULL,
   x int NOT NULL,
   fileFullname varchar(512) NOT NULL,
+  fileCommitSha varchar(50) NOT NULL,
   content varchar(100) NOT NULL,
-  PRIMARY KEY (x, y, fileFullname)
+  pullNum int NOT NULL,
+  repoLastCommitSha varchar(50) DEFAULT NULL
 );
