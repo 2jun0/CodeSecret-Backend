@@ -23,6 +23,7 @@ class Repository:
 		self.last_commit_sha = last_commit_sha
 		self.owner = owner
 		self.github_obj = github_obj
+		self.upstream_repo = None
 
 	def update_file(self, file: File, title: str, content: str, branch: str):
 		assert self.github_obj

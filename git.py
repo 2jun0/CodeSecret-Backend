@@ -11,12 +11,13 @@ def rate_limit():
 
 def init():
 	global g
-	g = Github(GITHUB_ACCOUNT['username'], GITHUB_ACCOUNT['password'])
+	# g = Github(GITHUB_ACCOUNT['username'], GITHUB_ACCOUNT['password'])
+	g = Github(GITHUB_ACCOUNT['api key'])
 
 def github_account_validate(github_username, github_password):
 	try:
 		g = Github(github_username, github_password)
-		data = [(s.name, s.name) for s in g.get_user().get_repos()]
+		# data = [(s.name, s.name) for s in g.get_user().get_repos()]
 		return True
 	except Exception as e:
 		raise CustomError(error = 'INVALID_GITHUB_ACCOUNT', msg='깃허브 계정정보가 잘못되었습니다.', status=401)

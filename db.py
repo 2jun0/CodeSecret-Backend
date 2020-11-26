@@ -136,7 +136,7 @@ def add_file(f: File):
    except pymysql.err.IntegrityError as e:
       raise CustomError(error='File_DUPLICATE', status=500, exception=e)
 
-def get_file(fullname):
+def get_file(fullname, repo_fullname):
 	global conn
 	curs = conn.cursor(pymysql.cursors.DictCursor)
 	#sql문 실행

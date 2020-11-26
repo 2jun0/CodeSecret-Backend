@@ -10,10 +10,10 @@ class JavaLangModule(DefaultLangModule):
 		return '//{}'.format(s)
 
 	def _get_import_str(self):
-		return 'import {}.*'.format(self.header_file_name)
+		return 'import {}.*'.format(self.header_file_name[:-5])
 
 	def _get_header_def(self, val_name:str):
-		return 'public static String {} = "YOUR SECRET KEY"\n'.format(val_name)
+		return 'public static String {} = "YOUR SECRET KEY";'.format(val_name)
 
 	def _header_update(self, key_name:str):
 		self.header_file.content = re.sub('public class AASecretKeys\s*{', 'public class AASecretKeys {\n\t%s'%(self._get_header_def(key_name)), self.header_file.content)

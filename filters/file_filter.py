@@ -18,7 +18,7 @@ def file_filter(cur_file: File, is_file): # true가 우리가 찾는 파일 or �
 		if not extension_regex.search(cur_file.name):
 			return False
 	
-	prev_file = db.get_file(cur_file.fullname)
+	prev_file = db.get_file(cur_file.fullname, cur_file.repo_fullname)
 
 	if not prev_file: # db에 파일이 기록되지 않음
 		db.add_file(cur_file)

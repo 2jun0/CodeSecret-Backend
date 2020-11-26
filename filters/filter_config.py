@@ -1,7 +1,6 @@
 API_REGEX = {
-	'Twitter':'[1-9][0-9]+-[0-9a-zA-Z]{40}',
-	'Google':'AIza[0-9A-Za-z-_]{35}',
-	'Square':'sqOatp-[0-9A-Za-z-_]{22}',
+	'Twitter-oauth-token':'[1-9][0-9]+-[0-9a-zA-Z]{40}',
+	'Google-oauth-token':'AIza[0-9A-Za-z-_]{35}',
 	'GCP':'[A-Za-z0-9_]{21}--[A-Za-z0-9_]{8}',
 	'Heroku':'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
 	'Slack':'xox.-[0-9]{12}-[0-9]{12}-[0-9]{12}-[a-zA-Z0-9]{32}',
@@ -17,5 +16,5 @@ API_REGEX = {
 FILE_FILTER = {
 	'IGNORE_NAME' : ['^__.*__','^\..*'],
 	'SELECT_NAME' : ['.gitignore'],
-	'ALLOW_FILE_EXTENSIONS' : ['py', 'js', 'java', 'c',	'cpp'],
+	'ALLOW_FILE_EXTENSIONS' : ['py', 'js', 'java', 'c',	'cpp', 'h'],
 }

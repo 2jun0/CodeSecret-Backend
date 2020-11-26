@@ -12,4 +12,4 @@ class JavascriptLangModule(DefaultLangModule):
 		return 'import * from {}'.format(self.header_file_name)
 
 	def _get_header_def(self, val_name:str):
-		return 'var {} = "YOUR SECRET KEY";\n'.format(val_name)
+		return 'var {} = "YOUR SECRET KEY";'.format(val_name)

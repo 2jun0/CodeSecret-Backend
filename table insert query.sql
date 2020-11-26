@@ -1,4 +1,5 @@
-DROP TABLE `code_secret`.`account`, `code_secret`.`file`, `code_secret`.`repository`, `code_secret`.`secret_key`;
+DROP TABLE `code_secret`.`account`;
+drop table `code_secret`.`file`, `code_secret`.`repository`, `code_secret`.`secret_key`;
 
 create table account (
   id varchar(12) NOT NULL,

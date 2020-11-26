@@ -32,6 +32,3 @@ class LangModule:
 				title='Secret key leak fix',
 				content=modified_gitignore_content,
 				branch='code-fix')
-		
-	def get_header_file_fullname(self):
-		return self.fork_repo.fullname+'/'+self.header_file_name

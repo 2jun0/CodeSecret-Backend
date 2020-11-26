@@ -61,9 +61,8 @@ class DefaultLangModule(LangModule):
 		
 	def prepare_header_file(self):
 		super().prepare_header_file()
-		file_fullname = self.get_header_file_fullname()
 
-		header_file_dict = db.get_file(file_fullname)
+		header_file_dict = db.get_file(self.header_file_name, self.fork_repo.upstream_repo.fullname)
 		if header_file_dict:
 			self.header_file = db.file_dict_to_obj(header_file_dict)
 			self.header_file.content = gc.get_file_content(self.header_file)
@@ -71,7 +70,10 @@ class DefaultLangModule(LangModule):
 			m = re.search(
 				self._get_comment_str('Secret Key Count = (\d+)'),
 				self.header_file.content)
-			self.secret_key_cnt = int(m.group(0))
+			if m:
+				self.secret_key_cnt = int(m.group(1))
+			else:
+				self.secret_key_cnt = 0
 		else:
 			# 헤더 파일 내용
 			self.secret_key_cnt = 0

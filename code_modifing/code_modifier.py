@@ -33,7 +33,7 @@ class CodeModifier:
 		self.fork_upstream_repo()
 
 		# check gitignore file
-		gitignore_file_dict = db.get_file('.gitignore')
+		gitignore_file_dict = db.get_file(fullname='.gitignore', repo_fullname=self.upstream_repo.fullname)
 		if gitignore_file_dict:
 			self.gitignore_file = db.file_dict_to_obj(gitignore_file_dict)
 			self.gitignore_file.content = gc.get_file_content(self.gitignore_file)
@@ -48,8 +48,7 @@ class CodeModifier:
 		try:
 			if not self.is_prepared:
 				self.prepare()
-
-			# TODO 파일 수정하는 코드 넣어줘!
+			
 			if file.fullname.endswith('.py'):
 				if 'py' not in self.lang_module_dict:
 					self.lang_module_dict['py'] = PythonLangModule(self.fork_repo, self.gitignore_file)
@@ -90,7 +89,8 @@ class CodeModifier:
 	def fork_upstream_repo(self):
 		# fork
 		self.fork_repo = g.repository_to_obj(repo = self.upstream_repo.github_obj.create_fork(), owner = config.GITHUB_ACCOUNT['username'])
-		
+		self.fork_repo.upstream_repo = self.upstream_repo
+
 		# create code-fix branch
 		refs = self.fork_repo.github_obj.get_git_refs()
 

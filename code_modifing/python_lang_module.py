@@ -12,4 +12,4 @@ class PythonLangModule(DefaultLangModule):
 		return 'from {} import *'.format(self.header_file_name)
 
 	def _get_header_def(self, val_name:str):
-		return '{} = \'YOUR SECRET KEY\'\n'.format(val_name)
+		return '{} = \'YOUR SECRET KEY\''.format(val_name)
