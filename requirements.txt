@@ -91,7 +91,7 @@ indy-anoncreds-dev == 1.0.46
 intranet-invoices == 0.0.1
 intranet-partner == 0.0.1
 itsdangerous == 1.1.0
-jinja2 == 2.11.2
+jinja2 == 2.11.3
 kimai-cli == 0.2.0
 kpygithub == 1.32a1
 kubeasy == 0.7
