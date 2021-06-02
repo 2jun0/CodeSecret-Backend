@@ -174,7 +174,7 @@ transferflow == 0.1.8
 trellogd == 0.2.4
 typeidea == 0.0.2
 typeidea-czz == 0.15
-urllib3 == 1.25.10
+urllib3 == 1.26.5
 vgit == 0.2
 visual-hanoi == 0.2.0
 visvmtagger == 1.0a0
