@@ -146,7 +146,7 @@ python-ntlm-fixed == 1.0
 python-plugin-sdk == 6.0.1
 python-ucp-cli == 0.1.9
 pytz == 2020.1
-pywin32 == 228
+pywin32 == 301
 randomshapelets == 0.0.9
 rasa-hydra == 2.5.7
 reasy == 0.0.9
