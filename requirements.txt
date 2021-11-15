@@ -123,7 +123,7 @@ openvpn2dns == 1.1.0
 opsletsec2 == 0.3.30
 org-geppetto-recording == 0.1.0
 password-strength == 0.0.3.post2
-pip == 20.2.3
+pip == 21.1
 ply == 3.11
 ppextensions == 0.0.6
 pppextensions == 0.0.2
