@@ -115,7 +115,7 @@ nails == 0.2.0
 netkeiba == 0.0.3
 netranker == 0.0.3
 nft-sdk == 2.2.0.2
-numpy == 1.19.2
+numpy == 1.22.0
 octobot == 0.3.9
 olapy == 0.7.9
 openbaton-cli == 6.0.0
