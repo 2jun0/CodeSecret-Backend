@@ -157,7 +157,7 @@ sciolyid == 0.5.1
 scrapyd-dash == 0.1.2
 semantic-segmentation == 0.1.0
 serapeum-backup == 1.0.7
-setuptools == 40.8.0
+setuptools == 65.5.1
 six == 1.15.0
 solar-radiation-model == 0.0.20
 sotoxic == 1.0
